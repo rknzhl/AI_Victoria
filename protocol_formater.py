@@ -38,7 +38,7 @@ def create_informal_docx(yandex_gpt_answer: str, output_path: str, timestamps=Fa
     doc = Document(output_path)
 
     title_paragraph = doc.add_paragraph()
-    run = title_paragraph.add_run(data["Тема"].upper())
+    run = title_paragraph.add_run(data["Название совещания"].upper())
 
     # Задаем шрифт
     run.font.name = font_name
@@ -83,6 +83,7 @@ def create_informal_docx(yandex_gpt_answer: str, output_path: str, timestamps=Fa
     cell1.text = "ДЛИТЕЛЬНОСТЬ:"
     cell2.text = "00:00"
 
+
     # # УЧАСТНИКИ
     # row = table.add_row()
     # cell1 = row.cells[0]
@@ -106,6 +107,26 @@ def create_informal_docx(yandex_gpt_answer: str, output_path: str, timestamps=Fa
                     run.font.size = Pt(9)
                     if cell_id == 0:
                         run.bold = True
+
+    goal_paragraph = doc.add_paragraph()
+    run = goal_paragraph.add_run("ПОВЕСТКА ДНЯ")
+
+    # Задаем шрифт
+    run.font.name = font_name
+
+    # Задаем размер шрифта
+    run.font.size = Pt(16)
+
+    run.font.color.rgb = RGBColor(2, 9, 63)
+
+    goal_paragraph = doc.add_paragraph()
+    run = goal_paragraph.add_run(data["Цель встречи"])
+    run.font.name = font_name
+    run.font.size = Pt(9)
+    run.font.color.rgb = RGBColor(2, 9, 63)
+    goal_paragraph.paragraph_format.space_before = Pt(8)
+    goal_paragraph.paragraph_format.space_after = Pt(20)
+
 
     resume_paragraph = doc.add_paragraph()
     resume_text = resume_paragraph.add_run("РЕЗЮМЕ ОБСУЖДЕНИЙ")
@@ -171,7 +192,7 @@ def create_informal_pdf(yandex_gpt_answer: str, output_path: str, timestamps=Fal
 
 
 
-def create_formal_docx(yandex_gpt_answer: str, output_path: str, timestamps=False, context=False) -> None:
+def create_formal_docx(yandex_gpt_answer: str, output_path: str, timestamps=False, context=False, assignment=False) -> None:
     """
         Формирование .docx файла с формальным отчетом о встрече
 
@@ -293,12 +314,28 @@ def create_formal_docx(yandex_gpt_answer: str, output_path: str, timestamps=Fals
             run_3.font.name = font_name
             run_3.font.size = Pt(14)
 
+    if assignment:
+        assignment_paragraph = doc.add_paragraph()
+        run = assignment_paragraph.add_run("ПЕРЕЧЕНЬ ПОРУЧЕНИЙ")
+        run.font.name = font_name
+        run.font.size = Pt(14)
+        run.bold = True
+        assignment_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        for idx in range(len(data["Перечень поручений"])):
+            list_paragraph_1 = doc.add_paragraph()
+            run_1 = list_paragraph_1.add_run(f"{idx + 1}.     {data["Перечень поручений"][idx]["Поручение"]}")
+            list_paragraph_1.paragraph_format.left_indent = 360000  # Отступ для маркера
+            list_paragraph_1.paragraph_format.first_line_indent = -360000  # Отступ для текста
+            list_paragraph_1.paragraph_format.space_after = Pt(6)
+            run_1.font.name = font_name
+            run_1.font.size = Pt(14)
+
 
     doc.save(output_path)
 
 
 
-def create_informal_pdf(yandex_gpt_answer: str, output_path: str, timestamps=False, context=False) -> None:
+def create_formal_pdf(yandex_gpt_answer: str, output_path: str, timestamps=False, context=False, assignment=False) -> None:
     """
     Формирование .pdf файла с формальным отчетом о встрече.
 
@@ -319,3 +356,6 @@ def create_informal_pdf(yandex_gpt_answer: str, output_path: str, timestamps=Fal
         print(f"Файл {docx_file} успешно удален.")
     else:
         print(f"Файл {docx_file} не существует.")
+
+
+create_informal_docx("unofficial_answer.json", "results/output.docx", True, True)
