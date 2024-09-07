@@ -27,7 +27,7 @@ def get_answer(role_text):
         "modelUri": "gpt://b1g72uajlds114mlufqi/yandexgpt/latest",
         "completionOptions": {
             "stream": False,
-            "temperature": 0.6,
+            "temperature": 0.07,
             "maxTokens": "2000"
         },
         "messages": [
