@@ -16,7 +16,7 @@ IAM_KEY = ''
 with open('IAM_TOKEN.txt', 'r') as token_file:
     IAM_KEY = token_file.read()
 IAM_KEY = IAM_KEY[:-1]    
-def get_answer(role_text):
+def get_answer(role_text, official_flag):
     url = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion'
     headers = {
         'Authorization': 'Bearer ' + IAM_KEY,
@@ -45,20 +45,20 @@ def get_answer(role_text):
     response = requests.post(url, headers=headers, data=json.dumps(data))
     
     final = response.json()['result']['alternatives'][0]['message']['text']
-    with open('output.txt', 'w', encoding='utf-8') as file:
+    with open('official_answer.json' if official_flag else 'unofficial_answer.json', 'w', encoding='utf-8') as file:
         file.write(final)
 
     
     
 def generate(official_flag):
     role_text = ''
-    with open("official_text.txt" if official_flag else "unofficial_text.txt" , 'r') as text_file:
+    with open("official_prompt.txt" if official_flag else "unofficial_prompt.txt" , 'r') as text_file:
         role_text = text_file.read()
-    get_answer(role_text)
+    get_answer(role_text, official_flag)
     
     
 
 
 
-flag = int(input())
-generate(flag)
+generate(0)
+generate(1)
