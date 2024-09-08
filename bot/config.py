@@ -1,0 +1,5 @@
+API_TOKEN = '7413677759:AAGH0rr52kFSL8GGRT7ABtr0CjLzPSC2JOw'
+DOWNLOAD_DIR = '/storage/tmp_audio'
+FORMATTED_DIR = '/storage/wav_formatted_audio' 
+DATABASE_PATH = '/storage/users_info.db'
+RESULT_PATH = '/storage/result'
